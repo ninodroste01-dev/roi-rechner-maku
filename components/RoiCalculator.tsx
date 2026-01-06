@@ -298,20 +298,44 @@ export function RoiCalculator() {
       results: calculateResults,
     };
 
-    // TODO: Send to make.com webhook
-    // await fetch('YOUR_MAKE_COM_WEBHOOK_URL', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(data),
-    // });
-
-    console.log("Data to send to webhook:", data);
-    setIsModalOpen(false);
-    setName("");
-    setEmail("");
-    setPhone("");
-    setNameError("");
-    setEmailError("");
+    // Send to make.com webhook
+    try {
+      const response = await fetch('https://hook.us2.make.com/2tgypw8klty3xleg5pmi0i5nhghs35oo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      
+      if (response.ok) {
+        // Success: Close modal and reset form
+        setIsModalOpen(false);
+        setName("");
+        setEmail("");
+        setPhone("");
+        setNameError("");
+        setEmailError("");
+        
+        // Success message
+        alert(
+          language === "de" 
+            ? "Vielen Dank! Ihre Daten wurden erfolgreich übermittelt." 
+            : language === "en" 
+            ? "Thank you! Your data has been submitted successfully." 
+            : "¡Gracias! Sus datos han sido enviados correctamente."
+        );
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error("Error sending data to webhook:", error);
+      alert(
+        language === "de" 
+          ? "Fehler beim Senden der Daten. Bitte versuchen Sie es erneut." 
+          : language === "en" 
+          ? "Error sending data. Please try again." 
+          : "Error al enviar los datos. Por favor, inténtelo de nuevo."
+      );
+    }
   };
 
   const stepTitle = () => {
