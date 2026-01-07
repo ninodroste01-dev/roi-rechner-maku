@@ -80,9 +80,20 @@ const slideIn = {
 };
 
 // Animated Counter Component
-function AnimatedCounter({ value, duration = 1.5 }: { value: number; duration?: number }) {
+function AnimatedCounter({
+  value,
+  duration = 1.5,
+  format,
+}: {
+  value: number;
+  duration?: number;
+  format?: (value: number) => string;
+}) {
   const springValue = useSpring(0, { duration: duration * 1000 });
-  const display = useTransform(springValue, (latest) => Math.round(latest).toLocaleString("de-DE"));
+  const display = useTransform(springValue, (latest) => {
+    if (format) return format(latest);
+    return Math.round(latest).toLocaleString("de-DE");
+  });
 
   React.useEffect(() => {
     springValue.set(value);
@@ -136,14 +147,15 @@ const getMachineSuggestion = (monthlyProduction: number) => {
   return "hpi650";
 };
 
-export function RoiCalculator() {
+export function RoiCalculator({ embed = false }: { embed?: boolean }) {
   const [language, setLanguage] = React.useState<Language>("de");
   const [currency, setCurrency] = React.useState<Currency>("EUR");
   const t = getTranslation(language);
 
   // Wizard state - 5 calculator steps (Step 0 = Landing wird nicht mitgezählt)
   const totalSteps = 5;
-  const [currentStep, setCurrentStep] = React.useState<number>(0);
+  // In embed mode we skip the big landing step by default (better UX in iframes)
+  const [currentStep, setCurrentStep] = React.useState<number>(embed ? 1 : 0);
 
   // Data states - with default values (user can edit)
   const [productTypeKey, setProductTypeKey] = React.useState<string>("");
@@ -446,7 +458,11 @@ export function RoiCalculator() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="min-h-[70vh] flex items-center justify-center"
+            className={
+              embed
+                ? "w-full"
+                : "min-h-[70vh] flex items-center justify-center"
+            }
           >
             <div className="w-full max-w-6xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -787,10 +803,19 @@ export function RoiCalculator() {
                         <Sparkles className="w-5 h-5 text-[#C41230]" />
                       </div>
                       <p className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#C41230] drop-shadow-lg">
-                        {formatCurrency(calculateResults.profitPerYear)}
+                        <AnimatedCounter
+                          value={calculateResults.profitPerYear}
+                          format={(v) => formatCurrencyIntl(Math.round(v), currency)}
+                        />
                       </p>
                       <p className="text-sm text-gray-300 mt-3">
-                        {t.monthly}: <span className="font-bold text-white">{formatCurrency(calculateResults.profitPerMonth)}</span>
+                        {t.monthly}:{" "}
+                        <span className="font-bold text-white">
+                          <AnimatedCounter
+                            value={calculateResults.profitPerMonth}
+                            format={(v) => formatCurrencyIntl(Math.round(v), currency)}
+                          />
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -826,7 +851,14 @@ export function RoiCalculator() {
                         <p className="text-xs text-white font-bold uppercase tracking-widest">{t.paybackTime}</p>
                       </div>
                       <p className="text-4xl font-black text-white drop-shadow-lg">
-                        {formatPaybackTime(calculateResults.paybackTime)}
+                        {calculateResults.paybackTime < 0.08 ? (
+                          t.lessThanOneMonth
+                        ) : (
+                          <AnimatedCounter
+                            value={calculateResults.paybackTime}
+                            format={(v) => `${v.toFixed(1).replace(".", ",")} ${t.years}`}
+                          />
+                        )}
                       </p>
                     </div>
                   </motion.div>
@@ -924,7 +956,11 @@ export function RoiCalculator() {
   };
 
   return (
-    <div className="relative w-full min-h-screen" role="main" aria-label="ROI Calculator Application">
+    <div
+      className={cn("relative w-full", !embed && "min-h-screen")}
+      role="main"
+      aria-label="ROI Calculator Application"
+    >
       {/* Tech Industrial Background */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-50 via-white to-gray-100" aria-hidden="true">
         <div className="absolute inset-0 opacity-[0.02]" style={{
@@ -989,7 +1025,15 @@ export function RoiCalculator() {
 
 
       {/* Content Area */}
-      <div className={currentStep === 0 ? "px-4 sm:px-6 lg:px-8 py-16" : "max-w-5xl mx-auto p-4 sm:p-6 lg:p-8"}>
+      <div
+        className={
+          currentStep === 0
+            ? embed
+              ? "px-4 sm:px-6 lg:px-8 py-6"
+              : "px-4 sm:px-6 lg:px-8 py-16"
+            : "max-w-5xl mx-auto p-4 sm:p-6 lg:p-8"
+        }
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
