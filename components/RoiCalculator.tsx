@@ -151,6 +151,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
   const [language, setLanguage] = React.useState<Language>("de");
   const [currency, setCurrency] = React.useState<Currency>("EUR");
   const t = getTranslation(language);
+  const privacyPolicyUrl = "https://maku-meattec.com/datenschutzerklaerung-dsgvo/";
 
   // Wizard state - 5 calculator steps (Step 0 = Landing wird nicht mitgezählt)
   const totalSteps = 5;
@@ -173,6 +174,8 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
   const [country, setCountry] = React.useState("");
   const [nameError, setNameError] = React.useState("");
   const [emailError, setEmailError] = React.useState("");
+  const [privacyConsent, setPrivacyConsent] = React.useState(false);
+  const [privacyConsentError, setPrivacyConsentError] = React.useState("");
   const [dataSubmitted, setDataSubmitted] = React.useState(false);
 
   // Machine suggestion is derived later
@@ -326,6 +329,8 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
       if (currentStep === 4) {
         // Step 4 -> Step 5 (Results), open modal for contact
         // Gehe NICHT zu Step 5, sondern öffne nur das Modal
+        setPrivacyConsent(false);
+        setPrivacyConsentError("");
         setIsModalOpen(true);
         return; // Verhindere das Wechseln zu Step 5
       }
@@ -370,6 +375,17 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
       return;
     }
 
+    if (!privacyConsent) {
+      setPrivacyConsentError(
+        language === "de"
+          ? "Bitte bestätigen Sie die Datenschutzerklärung."
+          : language === "en"
+          ? "Please confirm the privacy policy."
+          : "Por favor confirme la política de privacidad."
+      );
+      return;
+    }
+
     const data = {
       name,
       email,
@@ -406,6 +422,8 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
         setCountry("");
         setNameError("");
         setEmailError("");
+        setPrivacyConsent(false);
+        setPrivacyConsentError("");
         
         // Success message
         alert(
@@ -1251,18 +1269,89 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
                 className="h-14 text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300"
               />
             </motion.div>
+
+            {/* DSGVO / Privacy consent */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="space-y-2"
+            >
+              <label className="flex items-start gap-3 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  className="mt-1 h-4 w-4 accent-[#C41230]"
+                  checked={privacyConsent}
+                  onChange={(e) => {
+                    setPrivacyConsent(e.target.checked);
+                    if (e.target.checked) setPrivacyConsentError("");
+                  }}
+                />
+                <span>
+                  {language === "de" ? (
+                    <>
+                      Ich habe die{" "}
+                      <a
+                        href={privacyPolicyUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-bold text-[#C41230] underline underline-offset-2"
+                      >
+                        Datenschutzerklärung
+                      </a>{" "}
+                      gelesen und stimme der Verarbeitung meiner Daten zur Kontaktaufnahme zu.
+                    </>
+                  ) : language === "en" ? (
+                    <>
+                      I have read the{" "}
+                      <a
+                        href={privacyPolicyUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-bold text-[#C41230] underline underline-offset-2"
+                      >
+                        privacy policy
+                      </a>{" "}
+                      and agree to the processing of my data for contacting me.
+                    </>
+                  ) : (
+                    <>
+                      He leído la{" "}
+                      <a
+                        href={privacyPolicyUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-bold text-[#C41230] underline underline-offset-2"
+                      >
+                        política de privacidad
+                      </a>{" "}
+                      y acepto el tratamiento de mis datos para contactarme.
+                    </>
+                  )}
+                </span>
+              </label>
+              {privacyConsentError && (
+                <motion.p
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="text-xs text-[#C41230] font-bold"
+                >
+                  {privacyConsentError}
+                </motion.p>
+              )}
+            </motion.div>
           </div>
           
           <DialogFooter className="flex-col sm:flex-row gap-4">
             {/* Cancel-Button entfernt - Modal kann nicht geschlossen werden ohne Datenübermittlung */}
             <motion.div 
-              whileHover={!name || !email || !company || !country || !!nameError || !!emailError ? {} : { scale: 1.05 }} 
-              whileTap={!name || !email || !company || !country || !!nameError || !!emailError ? {} : { scale: 0.95 }}
+              whileHover={!name || !email || !company || !country || !privacyConsent || !!nameError || !!emailError ? {} : { scale: 1.05 }} 
+              whileTap={!name || !email || !company || !country || !privacyConsent || !!nameError || !!emailError ? {} : { scale: 0.95 }}
               className="w-full sm:w-auto"
             >
               <Button
                 onClick={handleModalSubmit}
-                disabled={!name || !email || !company || !country || !!nameError || !!emailError}
+                disabled={!name || !email || !company || !country || !privacyConsent || !!nameError || !!emailError}
                 className="w-full h-14 px-10 font-bold shadow-2xl transition-all disabled:opacity-50"
                 style={{ 
                   backgroundColor: '#C41230',
