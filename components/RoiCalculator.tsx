@@ -152,6 +152,9 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
   const [currency, setCurrency] = React.useState<Currency>("EUR");
   const t = getTranslation(language);
   const privacyPolicyUrl = "https://maku-meattec.com/datenschutzerklaerung-dsgvo/";
+  const makeWebhookUrl =
+    process.env.NEXT_PUBLIC_MAKE_WEBHOOK_URL ??
+    "https://hook.eu1.make.com/udrguaupu3ryq82aeh7lsf994htdzdim";
 
   // Wizard state - 5 calculator steps (Step 0 = Landing wird nicht mitgezählt)
   const totalSteps = 5;
@@ -405,7 +408,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
 
     // Send to make.com webhook
     try {
-      const response = await fetch('https://hook.us2.make.com/2tgypw8klty3xleg5pmi0i5nhghs35oo', {
+      const response = await fetch(makeWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
