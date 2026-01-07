@@ -1,5 +1,5 @@
-import { LandingPage } from "@/components/LandingPage";
+import { RoiCalculator } from "@/components/RoiCalculator";
 
 export default function Home() {
-  return <LandingPage />;
+  return <RoiCalculator />;
 }

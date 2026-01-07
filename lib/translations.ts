@@ -19,6 +19,14 @@ export interface Translations {
   subtitle: string;
   potential: string;
   
+  // Landing Page (Step 0)
+  landingTitle: string;
+  landingSubtitle: string;
+  landingDescription1: string;
+  landingDescription2: string;
+  landingCta: string;
+  landingFooter: string;
+  
   // Form Labels
   machineModel: string;
   productType: string;
@@ -32,10 +40,12 @@ export interface Translations {
   contactHeader: string
   nameLabel: string;
   emailLabel: string;
-  phoneLabel: string;
+  companyLabel: string;
+  countryLabel: string;
   namePlaceholder: string;
   emailPlaceholder: string;
-  phonePlaceholder: string;
+  companyPlaceholder: string;
+  countryPlaceholder: string;
 
   // Product Types
   fish: string;
@@ -102,6 +112,12 @@ export const translations: Record<Language, Translations> = {
     title: 'ROI-Rechner',
     subtitle: 'Berechnen Sie Ihr Einsparpotenzial',
     potential: 'Ihr Potenzial',
+    landingTitle: 'MAKU ROI-Rechner',
+    landingSubtitle: 'Berechnen Sie Ihre Amortisation in wenigen Schritten.',
+    landingDescription1: 'Ermitteln Sie präzise, wie schnell sich eine MAKU Hochleistungs-Injektion für Ihr Unternehmen rechnet.',
+    landingDescription2: 'Optimierte Ausbeute und höchste Produktqualität garantieren messbare Rentabilität.',
+    landingCta: 'Berechnung starten',
+    landingFooter: 'Made in Germany – Präzision trifft Innovation',
     machineModel: 'Maschinen-Modell',
     productType: 'Produkt / Rohware',
     productState: 'Zustand',
@@ -112,10 +128,12 @@ export const translations: Record<Language, Translations> = {
     contactHeader: 'Kontaktdaten',
     nameLabel: 'Name',
     emailLabel: 'E-Mail',
-    phoneLabel: 'Telefon',
+    companyLabel: 'Unternehmen',
+    countryLabel: 'Land',
     namePlaceholder: 'Ihr Name',
     emailPlaceholder: 'ihre.email@beispiel.de',
-    phonePlaceholder: '+49 ...',
+    companyPlaceholder: 'Ihr Unternehmen',
+    countryPlaceholder: 'Ihr Land',
     fish: 'Fisch',
     pork: 'Schwein',
     beef: 'Rind',
@@ -162,6 +180,12 @@ export const translations: Record<Language, Translations> = {
     title: 'ROI Calculator',
     subtitle: 'Calculate your savings potential',
     potential: 'Your Potential',
+    landingTitle: 'MAKU ROI Calculator',
+    landingSubtitle: 'Calculate your amortization in just a few steps.',
+    landingDescription1: 'Determine precisely how quickly a MAKU high-performance injection pays off for your business.',
+    landingDescription2: 'Optimized yield and highest product quality guarantee measurable profitability.',
+    landingCta: 'Start calculation',
+    landingFooter: 'Made in Germany – Precision meets Innovation',
     machineModel: 'Machine Model',
     productType: 'Product / Raw Material',
     productState: 'Condition',
@@ -172,10 +196,12 @@ export const translations: Record<Language, Translations> = {
     contactHeader: 'Contact Details',
     nameLabel: 'Name',
     emailLabel: 'Email',
-    phoneLabel: 'Phone',
+    companyLabel: 'Company',
+    countryLabel: 'Country',
     namePlaceholder: 'Your Name',
     emailPlaceholder: 'your.email@example.com',
-    phonePlaceholder: '+1 ...',
+    companyPlaceholder: 'Your Company',
+    countryPlaceholder: 'Your Country',
     fish: 'Fish',
     pork: 'Pork',
     beef: 'Beef',
@@ -222,6 +248,12 @@ export const translations: Record<Language, Translations> = {
     title: 'Calculadora ROI',
     subtitle: 'Calcule su potencial de ahorro',
     potential: 'Su Potencial',
+    landingTitle: 'Calculadora ROI MAKU',
+    landingSubtitle: 'Calcule su amortización en pocos pasos.',
+    landingDescription1: 'Determine con precisión cuán rápido una inyección de alto rendimiento MAKU se amortiza para su empresa.',
+    landingDescription2: 'Rendimiento optimizado y la más alta calidad de producto garantizan rentabilidad medible.',
+    landingCta: 'Iniciar cálculo',
+    landingFooter: 'Hecho en Alemania – Precisión encuentra Innovación',
     machineModel: 'Modelo de Máquina',
     productType: 'Producto / Materia Prima',
     productState: 'Estado',
@@ -232,10 +264,12 @@ export const translations: Record<Language, Translations> = {
     contactHeader: 'Datos de contacto',
     nameLabel: 'Nombre',
     emailLabel: 'Correo Electrónico',
-    phoneLabel: 'Teléfono',
+    companyLabel: 'Empresa',
+    countryLabel: 'País',
     namePlaceholder: 'Su Nombre',
     emailPlaceholder: 'su.correo@ejemplo.com',
-    phonePlaceholder: '+34 ...',
+    companyPlaceholder: 'Su Empresa',
+    countryPlaceholder: 'Su País',
     fish: 'Pescado',
     pork: 'Cerdo',
     beef: 'Carne de Vaca',

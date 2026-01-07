@@ -141,9 +141,9 @@ export function RoiCalculator() {
   const [currency, setCurrency] = React.useState<Currency>("EUR");
   const t = getTranslation(language);
 
-  // Wizard state - 5 steps (no contact step, using modal instead)
+  // Wizard state - 5 calculator steps (Step 0 = Landing wird nicht mitgezählt)
   const totalSteps = 5;
-  const [currentStep, setCurrentStep] = React.useState<number>(1);
+  const [currentStep, setCurrentStep] = React.useState<number>(0);
 
   // Data states - with default values (user can edit)
   const [productTypeKey, setProductTypeKey] = React.useState<string>("");
@@ -157,7 +157,8 @@ export function RoiCalculator() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
+  const [company, setCompany] = React.useState("");
+  const [country, setCountry] = React.useState("");
   const [nameError, setNameError] = React.useState("");
   const [emailError, setEmailError] = React.useState("");
   const [dataSubmitted, setDataSubmitted] = React.useState(false);
@@ -280,6 +281,8 @@ export function RoiCalculator() {
   // Validation per step - all fields must be filled
   const isStepValid = (step: number) => {
     switch (step) {
+      case 0:
+        return true; // Landing page is always valid
       case 1:
         return !!currency;
       case 2:
@@ -319,7 +322,7 @@ export function RoiCalculator() {
   };
 
   const goBack = () => {
-    if (currentStep > 1 && !isModalOpen) {
+    if (currentStep > 0 && !isModalOpen) {
       // Wenn man von Step 5 zurückgeht, setze das dataSubmitted Flag zurück
       if (currentStep === 5) {
         setDataSubmitted(false);
@@ -358,7 +361,8 @@ export function RoiCalculator() {
     const data = {
       name,
       email,
-      phone,
+      company,
+      country,
       language,
       currency,
       productType: productTypeKey,
@@ -386,7 +390,8 @@ export function RoiCalculator() {
         setCurrentStep(5); // Gehe zu Step 5 (Ergebnisse)
         setName("");
         setEmail("");
-        setPhone("");
+        setCompany("");
+        setCountry("");
         setNameError("");
         setEmailError("");
         
@@ -415,6 +420,8 @@ export function RoiCalculator() {
 
   const stepTitle = () => {
     switch (currentStep) {
+      case 0:
+        return ""; // No title for landing page
       case 1:
         return t.currency;
       case 2:
@@ -432,6 +439,94 @@ export function RoiCalculator() {
 
   const renderStep = () => {
     switch (currentStep) {
+      case 0:
+        // Landing Page (Step 0)
+        return (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="min-h-[70vh] flex items-center justify-center"
+          >
+            <div className="w-full max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                
+                {/* Left Column - Hero Image + Language Switcher */}
+                <motion.div
+                  variants={scaleIn}
+                  className="space-y-6"
+                >
+                  <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-200">
+                    <Image
+                      src="/Images/start seite roi rechner/startseite roi rechner.jpg"
+                      alt="MAKU Hochleistungs-Injektion"
+                      fill
+                      className="object-cover"
+                      priority
+                      quality={90}
+                    />
+                  </div>
+                  
+                  {/* Sprachauswahl unter dem Bild */}
+                  <div className="flex justify-center">
+                    <LanguageSwitcher language={language} onLanguageChange={setLanguage} />
+                  </div>
+                </motion.div>
+
+                {/* Right Column - Content */}
+                <motion.div
+                  variants={slideIn}
+                  className="space-y-8"
+                >
+                  {/* Heading */}
+                  <div className="space-y-4">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-none tracking-tight">
+                      {t.landingTitle}
+                    </h1>
+                    <p className="text-xl sm:text-2xl text-gray-600 leading-relaxed">
+                      {t.landingSubtitle}
+                    </p>
+                  </div>
+
+                  {/* Description */}
+                  <div className="text-base sm:text-lg text-gray-600 leading-relaxed space-y-3">
+                    <p>
+                      {t.landingDescription1}
+                    </p>
+                    <p>
+                      {t.landingDescription2}
+                    </p>
+                  </div>
+
+                  {/* CTA Button */}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      onClick={() => setCurrentStep(1)}
+                      className="h-16 px-12 text-lg font-bold shadow-2xl hover:shadow-2xl transition-all group"
+                      style={{
+                        backgroundColor: '#C41230',
+                        color: '#FFFFFF'
+                      }}
+                    >
+                      <span className="flex items-center gap-3">
+                        {t.landingCta}
+                        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                      </span>
+                    </Button>
+                  </motion.div>
+
+                  {/* Subtle Feature Hint */}
+                  <p className="text-sm text-gray-500 italic">
+                    {t.landingFooter}
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        );
       case 1:
         return (
           <motion.div 
@@ -829,7 +924,7 @@ export function RoiCalculator() {
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen" role="main" aria-label="ROI Calculator Application">
+    <div className="relative w-full min-h-screen" role="main" aria-label="ROI Calculator Application">
       {/* Tech Industrial Background */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-50 via-white to-gray-100" aria-hidden="true">
         <div className="absolute inset-0 opacity-[0.02]" style={{
@@ -838,60 +933,70 @@ export function RoiCalculator() {
         }} />
       </div>
 
-      {/* Kompakter Header - Logo & Titel horizontal */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-6"
-      >
-        <div className="flex items-center justify-between gap-4">
-          {/* Logo + Titel horizontal */}
-          <div className="flex items-center gap-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex-shrink-0 relative w-24 h-12 sm:w-32 sm:h-16"
-            >
-              <Image
-                src="/Images/maku-logo.png/maku-logo.png.png"
-                alt="MAKU Meat Tec Logo"
-                fill
-                className="object-contain drop-shadow-2xl"
-                priority
-              />
-            </motion.div>
-            
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1A1A1A]">
-              ROI-Rechner
-            </h1>
+      {/* Header - Nur anzeigen wenn nicht auf Landing (Step 0) */}
+      {currentStep > 0 && (
+        <>
+          {/* Kompakter Header - Logo & Titel horizontal */}
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 pb-0"
+          >
+            <div className="flex items-center justify-between gap-4 mb-6">
+              {/* Logo + Titel horizontal */}
+              <div className="flex items-center gap-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="flex-shrink-0 relative w-24 h-12 sm:w-32 sm:h-16"
+                >
+                  <Image
+                    src="/Images/maku-logo.png/maku-logo.png.png"
+                    alt="MAKU Meat Tec Logo"
+                    fill
+                    className="object-contain drop-shadow-2xl"
+                    priority
+                  />
+                </motion.div>
+                
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1A1A1A]">
+                  ROI-Rechner
+                </h1>
+              </div>
+
+              {/* Language Switcher - Desktop */}
+              <LanguageSwitcher language={language} onLanguageChange={setLanguage} className="hidden sm:flex" />
+            </div>
+
+            {/* Language Switcher - Mobile */}
+            <div className="mb-6 sm:hidden flex justify-end">
+              <LanguageSwitcher language={language} onLanguageChange={setLanguage} />
+            </div>
+          </motion.div>
+
+          {/* Hero Section */}
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <HeroSection 
+              title={stepTitle()}
+              stepNumber={currentStep} // currentStep 1-5 entspricht Schritt 1-5
+              totalSteps={totalSteps}   // totalSteps = 5
+            />
           </div>
+        </>
+      )}
 
-          {/* Language Switcher - Desktop */}
-          <LanguageSwitcher language={language} onLanguageChange={setLanguage} className="hidden sm:flex" />
-        </div>
-      </motion.div>
 
-      {/* Language Switcher - Mobile */}
-      <div className="mb-6 sm:hidden flex justify-end">
-        <LanguageSwitcher language={language} onLanguageChange={setLanguage} />
-      </div>
-
-      {/* Hero Section */}
-      <HeroSection 
-        title={stepTitle()}
-        stepNumber={currentStep}
-        totalSteps={totalSteps}
-      />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <Card className="overflow-hidden shadow-2xl border-2 border-gray-300 bg-white backdrop-blur-sm">
-          <CardContent className="space-y-8 pt-10 px-6 sm:px-10 pb-10">
+      {/* Content Area */}
+      <div className={currentStep === 0 ? "px-4 sm:px-6 lg:px-8 py-16" : "max-w-5xl mx-auto p-4 sm:p-6 lg:p-8"}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          {currentStep === 0 ? (
+            // Landing Page - No Card wrapper
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -903,55 +1008,72 @@ export function RoiCalculator() {
                 {renderStep()}
               </motion.div>
             </AnimatePresence>
-
-            {/* Enhanced Navigation - Hidden on Step 5 */}
-            {currentStep < 5 && (
-              <motion.div 
-                className="flex flex-col sm:flex-row justify-between gap-4 pt-8 border-t-2 border-gray-200"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      variant="outline"
-                      className="h-14 px-6 font-bold border-2 hover:bg-gray-100 disabled:opacity-40 text-base"
-                      onClick={goBack}
-                      disabled={currentStep === 1 || isModalOpen}
-                      style={{ 
-                        borderColor: (currentStep === 1 || isModalOpen) ? '#9CA3AF' : '#2B2B2B',
-                        color: (currentStep === 1 || isModalOpen) ? '#9CA3AF' : '#1A1A1A'
-                      }}
-                    >
-                      {t.back}
-                    </Button>
-                  </motion.div>
-                  <motion.div 
-                    whileHover={isStepValid(currentStep) ? { scale: 1.05 } : {}} 
-                    whileTap={isStepValid(currentStep) ? { scale: 0.95 } : {}}
+          ) : (
+            // Calculator Steps - Card wrapper
+            <Card className="overflow-hidden shadow-2xl border-2 border-gray-300 bg-white backdrop-blur-sm">
+              <CardContent className="space-y-8 pt-10 px-6 sm:px-10 pb-10">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentStep}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <Button
-                      className="h-14 px-10 font-bold shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base group"
-                      onClick={goNext}
-                      disabled={!isStepValid(currentStep)}
-                      style={{ 
-                        backgroundColor: isStepValid(currentStep) ? '#C41230' : '#9CA3AF',
-                        color: '#FFFFFF'
-                      }}
-                    >
-                      <span className="flex items-center gap-2">
-                        {t.next}
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      </span>
-                    </Button>
+                    {renderStep()}
                   </motion.div>
-                </>
-              </motion.div>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
+                </AnimatePresence>
+
+                {/* Enhanced Navigation - Hidden on Step 0 and Step 5 */}
+                {currentStep > 0 && currentStep < 5 && (
+                  <motion.div 
+                    className="flex flex-col sm:flex-row justify-between gap-4 pt-8 border-t-2 border-gray-200"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          variant="outline"
+                          className="h-14 px-6 font-bold border-2 hover:bg-gray-100 disabled:opacity-40 text-base"
+                          onClick={goBack}
+                          disabled={currentStep === 1 || isModalOpen}
+                          style={{ 
+                            borderColor: (currentStep === 1 || isModalOpen) ? '#9CA3AF' : '#2B2B2B',
+                            color: (currentStep === 1 || isModalOpen) ? '#9CA3AF' : '#1A1A1A'
+                          }}
+                        >
+                          {t.back}
+                        </Button>
+                      </motion.div>
+                      <motion.div 
+                        whileHover={isStepValid(currentStep) ? { scale: 1.05 } : {}} 
+                        whileTap={isStepValid(currentStep) ? { scale: 0.95 } : {}}
+                      >
+                        <Button
+                          className="h-14 px-10 font-bold shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base group"
+                          onClick={goNext}
+                          disabled={!isStepValid(currentStep)}
+                          style={{ 
+                            backgroundColor: isStepValid(currentStep) ? '#C41230' : '#9CA3AF',
+                            color: '#FFFFFF'
+                          }}
+                        >
+                          <span className="flex items-center gap-2">
+                            {t.next}
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                        </Button>
+                      </motion.div>
+                    </>
+                  </motion.div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </motion.div>
+      </div>
 
       {/* Contact Modal with Enhanced Design */}
       <Dialog 
@@ -1055,14 +1177,33 @@ export function RoiCalculator() {
               className="space-y-2"
             >
               <label className="text-sm font-bold leading-none text-foreground flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-gray-400" />
-                {t.phoneLabel} <span className="text-gray-400 text-xs font-normal">(optional)</span>
+                <CheckCircle2 className="w-4 h-4 text-[#C41230]" />
+                {t.companyLabel}
               </label>
               <Input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={t.phonePlaceholder}
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder={t.companyPlaceholder}
+                className="h-14 text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300"
+              />
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="space-y-2"
+            >
+              <label className="text-sm font-bold leading-none text-foreground flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#C41230]" />
+                {t.countryLabel}
+              </label>
+              <Input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder={t.countryPlaceholder}
                 className="h-14 text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300"
               />
             </motion.div>
@@ -1071,13 +1212,13 @@ export function RoiCalculator() {
           <DialogFooter className="flex-col sm:flex-row gap-4">
             {/* Cancel-Button entfernt - Modal kann nicht geschlossen werden ohne Datenübermittlung */}
             <motion.div 
-              whileHover={!name || !email || !!nameError || !!emailError ? {} : { scale: 1.05 }} 
-              whileTap={!name || !email || !!nameError || !!emailError ? {} : { scale: 0.95 }}
+              whileHover={!name || !email || !company || !country || !!nameError || !!emailError ? {} : { scale: 1.05 }} 
+              whileTap={!name || !email || !company || !country || !!nameError || !!emailError ? {} : { scale: 0.95 }}
               className="w-full sm:w-auto"
             >
               <Button
                 onClick={handleModalSubmit}
-                disabled={!name || !email || !!nameError || !!emailError}
+                disabled={!name || !email || !company || !country || !!nameError || !!emailError}
                 className="w-full h-14 px-10 font-bold shadow-2xl transition-all disabled:opacity-50"
                 style={{ 
                   backgroundColor: '#C41230',
