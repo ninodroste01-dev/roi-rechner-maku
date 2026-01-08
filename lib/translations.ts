@@ -1,5 +1,59 @@
 export type Language = 'de' | 'en' | 'es';
 
+// ISO 3166-1 alpha-2 Country Codes für GoHighLevel Kompatibilität
+// Sortiert nach Hauptmärkten (90%+: Lateinamerika, Spanien, Portugal, USA)
+export const COUNTRIES = [
+  // Hauptmärkte Europa
+  { code: 'ES', de: 'Spanien', en: 'Spain', es: 'España' },
+  { code: 'PT', de: 'Portugal', en: 'Portugal', es: 'Portugal' },
+  
+  // Hauptmarkt Nordamerika
+  { code: 'US', de: 'USA', en: 'USA', es: 'EE.UU.' },
+  
+  // Hauptmarkt Lateinamerika (alphabetisch sortiert)
+  { code: 'AR', de: 'Argentinien', en: 'Argentina', es: 'Argentina' },
+  { code: 'BO', de: 'Bolivien', en: 'Bolivia', es: 'Bolivia' },
+  { code: 'BR', de: 'Brasilien', en: 'Brazil', es: 'Brasil' },
+  { code: 'CL', de: 'Chile', en: 'Chile', es: 'Chile' },
+  { code: 'CO', de: 'Kolumbien', en: 'Colombia', es: 'Colombia' },
+  { code: 'CR', de: 'Costa Rica', en: 'Costa Rica', es: 'Costa Rica' },
+  { code: 'CU', de: 'Kuba', en: 'Cuba', es: 'Cuba' },
+  { code: 'DO', de: 'Dominikanische Republik', en: 'Dominican Republic', es: 'República Dominicana' },
+  { code: 'EC', de: 'Ecuador', en: 'Ecuador', es: 'Ecuador' },
+  { code: 'SV', de: 'El Salvador', en: 'El Salvador', es: 'El Salvador' },
+  { code: 'GT', de: 'Guatemala', en: 'Guatemala', es: 'Guatemala' },
+  { code: 'HN', de: 'Honduras', en: 'Honduras', es: 'Honduras' },
+  { code: 'MX', de: 'Mexiko', en: 'Mexico', es: 'México' },
+  { code: 'NI', de: 'Nicaragua', en: 'Nicaragua', es: 'Nicaragua' },
+  { code: 'PA', de: 'Panama', en: 'Panama', es: 'Panamá' },
+  { code: 'PY', de: 'Paraguay', en: 'Paraguay', es: 'Paraguay' },
+  { code: 'PE', de: 'Peru', en: 'Peru', es: 'Perú' },
+  { code: 'UY', de: 'Uruguay', en: 'Uruguay', es: 'Uruguay' },
+  { code: 'VE', de: 'Venezuela', en: 'Venezuela', es: 'Venezuela' },
+  
+  // Weitere wichtige Märkte
+  { code: 'DE', de: 'Deutschland', en: 'Germany', es: 'Alemania' },
+  { code: 'AT', de: 'Österreich', en: 'Austria', es: 'Austria' },
+  { code: 'CH', de: 'Schweiz', en: 'Switzerland', es: 'Suiza' },
+  { code: 'FR', de: 'Frankreich', en: 'France', es: 'Francia' },
+  { code: 'IT', de: 'Italien', en: 'Italy', es: 'Italia' },
+  { code: 'NL', de: 'Niederlande', en: 'Netherlands', es: 'Países Bajos' },
+  { code: 'BE', de: 'Belgien', en: 'Belgium', es: 'Bélgica' },
+  { code: 'PL', de: 'Polen', en: 'Poland', es: 'Polonia' },
+  { code: 'GB', de: 'Vereinigtes Königreich', en: 'United Kingdom', es: 'Reino Unido' },
+  { code: 'CA', de: 'Kanada', en: 'Canada', es: 'Canadá' },
+  { code: 'CN', de: 'China', en: 'China', es: 'China' },
+  { code: 'JP', de: 'Japan', en: 'Japan', es: 'Japón' },
+  { code: 'IN', de: 'Indien', en: 'India', es: 'India' },
+  { code: 'AU', de: 'Australien', en: 'Australia', es: 'Australia' },
+  { code: 'NZ', de: 'Neuseeland', en: 'New Zealand', es: 'Nueva Zelanda' },
+  { code: 'ZA', de: 'Südafrika', en: 'South Africa', es: 'Sudáfrica' },
+  { code: 'RU', de: 'Russland', en: 'Russia', es: 'Rusia' },
+  { code: 'TR', de: 'Türkei', en: 'Turkey', es: 'Turquía' },
+  { code: 'AE', de: 'Vereinigte Arabische Emirate', en: 'United Arab Emirates', es: 'Emiratos Árabes Unidos' },
+  { code: 'SA', de: 'Saudi-Arabien', en: 'Saudi Arabia', es: 'Arabia Saudita' },
+] as const;
+
 export interface Translations {
   // Steps & Navigation
   stepLabel: (current: number, total: number) => string

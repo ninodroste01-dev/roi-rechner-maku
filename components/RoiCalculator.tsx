@@ -31,7 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Language, getTranslation } from "@/lib/translations";
+import { Language, getTranslation, COUNTRIES } from "@/lib/translations";
 import { cn } from "@/lib/utils";
 
 type Currency = "EUR" | "USD" | "GBP";
@@ -1315,13 +1315,18 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
                 <CheckCircle2 className="w-4 h-4 text-[#C41230]" />
                 {t.countryLabel}
               </label>
-              <Input
-                type="text"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                placeholder={t.countryPlaceholder}
-                className="h-14 text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300"
-              />
+              <Select value={country} onValueChange={setCountry}>
+                <SelectTrigger className="w-full h-14 text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300">
+                  <SelectValue placeholder={t.countryPlaceholder} />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {COUNTRIES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {c[language]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </motion.div>
 
             {/* DSGVO / Privacy consent */}
