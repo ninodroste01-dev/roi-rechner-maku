@@ -425,6 +425,16 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
     // Ländername statt ISO-Code senden für GoHighLevel-Kompatibilität
     const countryName = COUNTRIES.find((c) => c.code === country)?.name || country;
     
+    // Ergebnisse runden wie auf der Ergebnisseite angezeigt
+    const roundedResults = calculateResults ? {
+      outputOld: Math.round(calculateResults.outputOld),
+      outputNew: Math.round(calculateResults.outputNew),
+      outputDiff: Math.round(calculateResults.outputDiff),
+      profitPerYear: Math.round(calculateResults.profitPerYear),
+      profitPerMonth: Math.round(calculateResults.profitPerMonth),
+      paybackTime: parseFloat(calculateResults.paybackTime.toFixed(1)),
+    } : null;
+    
     const data = {
       name,
       email,
@@ -440,7 +450,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
       currentYield: parseFloat(currentYield),
       targetYield: parseFloat(targetYield),
       machineSuggestion,
-      results: calculateResults,
+      results: roundedResults,
     };
 
     // Send to make.com webhook
