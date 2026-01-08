@@ -422,12 +422,15 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
       return;
     }
 
+    // Ländername statt ISO-Code senden für GoHighLevel-Kompatibilität
+    const countryName = COUNTRIES.find((c) => c.code === country)?.name || country;
+    
     const data = {
       name,
       email,
       phone,
       company,
-      country,
+      country: countryName,
       language,
       currency,
       productType: productTypeKey,
@@ -1189,7 +1192,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
         }}
       >
         <DialogContent 
-          className="sm:max-w-lg border-2 border-[#C41230]"
+          className="sm:max-w-lg border-2 border-[#C41230] !overflow-hidden flex flex-col"
           showCloseButton={false}
           onEscapeKeyDown={(e) => {
             // Verhindere ESC-Taste
@@ -1204,7 +1207,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
             e.preventDefault();
           }}
         >
-          <DialogHeader className="space-y-3">
+          <DialogHeader className="space-y-3 flex-shrink-0">
             <DialogTitle className="text-3xl font-black bg-gradient-to-r from-[#1A1A1A] to-[#C41230] bg-clip-text text-transparent">
               {t.modalTitle}
             </DialogTitle>
@@ -1213,7 +1216,8 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-6 py-6">
+          {/* Scrollbarer Container für Formularfelder */}
+          <div className="space-y-6 py-6 overflow-y-auto max-h-[60vh] overscroll-contain flex-1 pr-2">
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1347,11 +1351,16 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
                   className="w-[--radix-popover-trigger-width] p-0" 
                   align="start"
                   side="bottom"
-                  avoidCollisions={false}
+                  avoidCollisions={true}
+                  onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                   <Command>
                     <CommandInput 
                       placeholder={language === "de" ? "Land suchen..." : language === "en" ? "Search country..." : "Buscar país..."} 
+                      onFocus={(e) => {
+                        // Verhindere Scroll-Sprung bei Fokus
+                        e.preventDefault();
+                      }}
                     />
                     <CommandList className="max-h-[200px]">
                       <CommandEmpty>{language === "de" ? "Kein Land gefunden." : language === "en" ? "No country found." : "País no encontrado."}</CommandEmpty>
@@ -1453,7 +1462,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
             </motion.div>
           </div>
           
-          <DialogFooter className="flex-col sm:flex-row gap-4">
+          <DialogFooter className="flex-col sm:flex-row gap-4 flex-shrink-0 pt-4 border-t border-gray-200">
             {/* Cancel-Button entfernt - Modal kann nicht geschlossen werden ohne Datenübermittlung */}
             <motion.div 
               whileHover={!name || !email || !phone || !company || !country || !privacyConsent || !!nameError || !!emailError || !!phoneError ? {} : { scale: 1.05 }} 
