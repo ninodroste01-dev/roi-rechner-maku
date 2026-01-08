@@ -432,7 +432,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
       outputDiff: Math.round(calculateResults.outputDiff),
       profitPerYear: Math.round(calculateResults.profitPerYear),
       profitPerMonth: Math.round(calculateResults.profitPerMonth),
-      paybackTime: parseFloat(calculateResults.paybackTime.toFixed(1)),
+      paybackTime: Number(calculateResults.paybackTime.toFixed(1)),
     } : null;
     
     const data = {
