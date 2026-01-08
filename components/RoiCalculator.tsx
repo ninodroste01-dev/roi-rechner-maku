@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import { 
   TrendingUp, DollarSign, Clock, Package, Zap, CheckCircle2, 
-  Settings, Factory, Target, ArrowRight, Sparkles 
+  Settings, Factory, Target, ArrowRight, Sparkles, ChevronsUpDown, Check
 } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +21,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -176,6 +189,7 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
   const [phone, setPhone] = React.useState("");
   const [company, setCompany] = React.useState("");
   const [country, setCountry] = React.useState("");
+  const [countryOpen, setCountryOpen] = React.useState(false);
   const [nameError, setNameError] = React.useState("");
   const [emailError, setEmailError] = React.useState("");
   const [phoneError, setPhoneError] = React.useState("");
@@ -1315,18 +1329,49 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
                 <CheckCircle2 className="w-4 h-4 text-[#C41230]" />
                 {t.countryLabel}
               </label>
-              <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger className="w-full h-14 text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300">
-                  <SelectValue placeholder={t.countryPlaceholder} />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {COUNTRIES.map((c) => (
-                    <SelectItem key={c.code} value={c.code}>
-                      {c[language]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={countryOpen}
+                    className="w-full h-14 justify-between text-base border-2 focus:ring-2 focus:ring-[#C41230] hover:border-[#C41230] transition-all duration-300 font-normal"
+                  >
+                    {country
+                      ? COUNTRIES.find((c) => c.code === country)?.name
+                      : t.countryPlaceholder}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder={language === "de" ? "Land suchen..." : language === "en" ? "Search country..." : "Buscar país..."} />
+                    <CommandList>
+                      <CommandEmpty>{language === "de" ? "Kein Land gefunden." : language === "en" ? "No country found." : "País no encontrado."}</CommandEmpty>
+                      <CommandGroup>
+                        {COUNTRIES.map((c) => (
+                          <CommandItem
+                            key={c.code}
+                            value={c.name}
+                            onSelect={() => {
+                              setCountry(c.code);
+                              setCountryOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                country === c.code ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {c.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </motion.div>
 
             {/* DSGVO / Privacy consent */}
