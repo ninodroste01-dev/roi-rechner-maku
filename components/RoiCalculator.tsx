@@ -1179,6 +1179,9 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
       {/* Contact Modal with Enhanced Design */}
       <Dialog 
         open={isModalOpen} 
+        // In iframe/embed contexts (e.g. Word), Radix' scroll-lock can break touch scrolling.
+        // Non-modal keeps UX smooth while we still prevent closing via the handlers below.
+        modal={!embed}
         onOpenChange={(open) => {
           // Verhindere das Schließen des Modals, außer wenn die Daten erfolgreich übermittelt wurden
           // Das Modal kann nur geschlossen werden, wenn isModalOpen bereits false ist (nach erfolgreicher Übermittlung)
@@ -1213,8 +1216,8 @@ export function RoiCalculator({ embed = false }: { embed?: boolean }) {
             </DialogDescription>
           </DialogHeader>
           
-          {/* Scrollbarer Container für Formularfelder - feste Höhe für iframe-Kompatibilität */}
-          <div className="space-y-6 py-6 overflow-y-auto overscroll-contain flex-1 min-h-0 pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+          {/* Scrollbarer Container für Formularfelder */}
+          <div className="space-y-6 py-6 overflow-y-auto overscroll-auto flex-1 min-h-0 pr-2 touch-pan-y [-webkit-overflow-scrolling:touch] scroll-smooth [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

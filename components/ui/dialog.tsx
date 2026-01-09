@@ -69,12 +69,13 @@ function DialogContent({
           onPointerDownOutside?.(e);
         }}
         className={cn(
-          // Standard shadcn/radix positioning: fixed + centered so it always shows above the overlay.
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed left-[50%] top-[50%] z-50 w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-lg border p-6 shadow-lg duration-200 outline-none sm:max-w-lg",
+          // Mobile-first: use a "sheet" layout (no translate) to avoid iOS/iframe scroll issues.
+          // From sm+ we fall back to centered dialog.
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed inset-x-4 top-4 bottom-4 z-50 w-auto rounded-lg border p-6 shadow-lg duration-200 outline-none sm:inset-x-auto sm:top-[50%] sm:bottom-auto sm:left-[50%] sm:w-full sm:max-w-[calc(100%-2rem)] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-lg",
           // Layout: allow header/footer + scrollable body in consumers (flex children).
           "flex flex-col",
           // Keep content contained; consumers can make inner sections scroll.
-          "max-h-[90vh] overflow-hidden",
+          "overflow-hidden sm:max-h-[90vh]",
           className
         )}
         {...props}
